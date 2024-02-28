@@ -24,7 +24,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	// reactor tool
 	implementation("io.projectreactor:reactor-tools")
-	
+
 	runtimeOnly("com.mysql:mysql-connector-j")
 	runtimeOnly("io.asyncer:r2dbc-mysql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

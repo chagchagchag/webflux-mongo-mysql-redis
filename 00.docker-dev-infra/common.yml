@@ -1,0 +1,6 @@
+version: '3.7'
+
+networks:
+  example-network:
+    #    driver: bridge
+    external: true
