@@ -12,7 +12,7 @@ services:
       - MYSQL_USER=user
       - MYSQL_USER_HOST=%
       - MYSQL_PASSWORD=test1357
-      - MYSQL_DATABASE=coupon
+      - MYSQL_DATABASE=example
       - MYSQL_ROOT_HOST=%
       - MYSQL_ROOT_PASSWORD=test1357
       - TZ=Asia/Seoul
