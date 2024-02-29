@@ -1,7 +1,7 @@
-package io.chagchagchag.example.foobar.user.usecase.user;
+package io.chagchagchag.example.foobar.core.user;
 
-import io.chagchagchag.example.foobar.user.usecase.article.Article;
-import io.chagchagchag.example.foobar.user.usecase.image.Image;
+import io.chagchagchag.example.foobar.core.article.Article;
+import io.chagchagchag.example.foobar.core.image.Image;
 import java.util.List;
 import java.util.Optional;
 

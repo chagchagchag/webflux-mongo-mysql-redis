@@ -1,12 +1,12 @@
 package io.chagchagchag.example.foobar.user.usecase;
 
-import io.chagchagchag.example.foobar.user.dataaccess.entity.factory.UserEntityFactory;
-import io.chagchagchag.example.foobar.user.dataaccess.repository.UserR2dbcRepository;
-import io.chagchagchag.example.foobar.user.usecase.image.factory.ImageFactory;
-import io.chagchagchag.example.foobar.user.usecase.image.mapper.ImageMapper;
-import io.chagchagchag.example.foobar.user.usecase.image.response.ImageResponse;
-import io.chagchagchag.example.foobar.user.usecase.user.User;
-import io.chagchagchag.example.foobar.user.usecase.user.valueobject.UserMapper;
+import io.chagchagchag.example.foobar.core.image.ImageFactory;
+import io.chagchagchag.example.foobar.core.image.ImageMapper;
+import io.chagchagchag.example.foobar.core.image.ImageResponse;
+import io.chagchagchag.example.foobar.core.user.User;
+import io.chagchagchag.example.foobar.dataaccess.user.entity.factory.UserEntityFactory;
+import io.chagchagchag.example.foobar.dataaccess.user.valueobject.UserMapper;
+import io.chagchagchag.example.foobar.dataaccess.user.repository.UserR2dbcRepository;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

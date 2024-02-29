@@ -16,6 +16,8 @@ repositories {
 }
 
 dependencies {
+	implementation(project(":foobar-core"))
+	implementation(project(":foobar-dataaccess"))
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 //	implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
 	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")

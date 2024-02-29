@@ -1,4 +1,4 @@
-package io.chagchagchag.example.foobar.user.usecase.image.response;
+package io.chagchagchag.example.foobar.core.image;
 
 public record ImageResponse(
     String id,

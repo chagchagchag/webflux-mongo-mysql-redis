@@ -1,4 +1,4 @@
-package io.chagchagchag.example.foobar.user.usecase.image;
+package io.chagchagchag.example.foobar.core.image;
 
 public record Image(
     String id,

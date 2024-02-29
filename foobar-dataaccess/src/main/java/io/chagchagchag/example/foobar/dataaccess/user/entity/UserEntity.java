@@ -1,4 +1,4 @@
-package io.chagchagchag.example.foobar.user.dataaccess.entity;
+package io.chagchagchag.example.foobar.dataaccess.user.entity;
 
 
 import java.time.LocalDateTime;

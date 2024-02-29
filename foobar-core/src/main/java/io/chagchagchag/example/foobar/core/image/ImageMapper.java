@@ -1,7 +1,5 @@
-package io.chagchagchag.example.foobar.user.usecase.image.mapper;
+package io.chagchagchag.example.foobar.core.image;
 
-import io.chagchagchag.example.foobar.user.usecase.image.Image;
-import io.chagchagchag.example.foobar.user.usecase.image.response.ImageResponse;
 import org.springframework.stereotype.Component;
 
 @Component

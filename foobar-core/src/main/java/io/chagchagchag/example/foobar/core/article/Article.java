@@ -1,4 +1,4 @@
-package io.chagchagchag.example.foobar.user.usecase.article;
+package io.chagchagchag.example.foobar.core.article;
 
 public record Article(
     String id,

@@ -1,6 +1,6 @@
-package io.chagchagchag.example.foobar.user.dataaccess.entity.factory;
+package io.chagchagchag.example.foobar.dataaccess.user.entity.factory;
 
-import io.chagchagchag.example.foobar.user.dataaccess.entity.UserEntity;
+import io.chagchagchag.example.foobar.dataaccess.user.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component
