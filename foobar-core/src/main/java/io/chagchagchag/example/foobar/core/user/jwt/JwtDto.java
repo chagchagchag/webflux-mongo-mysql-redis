@@ -1,4 +1,4 @@
-package io.chagchagchag.example.foobar.core.user.security;
+package io.chagchagchag.example.foobar.core.user.jwt;
 
 import java.util.Date;
 

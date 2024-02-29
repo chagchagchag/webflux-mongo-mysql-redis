@@ -1,8 +1,6 @@
-package io.chagchagchag.example.foobar.user.config;
+package io.chagchagchag.example.foobar.core.user.jwt;
 
 import io.chagchagchag.example.foobar.core.user.User;
-import io.chagchagchag.example.foobar.core.user.security.JwtDto;
-import io.chagchagchag.example.foobar.dataaccess.user.security.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
@@ -12,22 +10,9 @@ import java.security.Key;
 import java.util.Date;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.server.ServerResponse;
 
 @Component
 public class JwtProcessor {
-  public String generateToken(Key key, CustomUserDetails userDetails){
-    return Jwts.builder()
-        .setSubject(userDetails.getUsername())
-        .setExpiration(new Date(System.currentTimeMillis() + 864000000))
-        .claim("id", userDetails.getUser().getId())
-//        .claim("email", userDetails.getUser().())
-        .claim("profileImageId", userDetails.getUser().getProfileImageId())
-        .claim("username", userDetails.getUser().getName())
-        .claim("password", userDetails.getPassword())
-        .signWith(key, SignatureAlgorithm.HS256)
-        .compact();
-  }
 
   public String generateToken(Key key, User user){
     return Jwts.builder()
