@@ -1,4 +1,4 @@
-rootProject.name = "data_reactive"
+rootProject.name = "foobar-webflux-service"
 include(
         "foobar-core",
         "foobar-user",
