@@ -1,4 +1,4 @@
-package io.chagchagchag.example.foobar.core.user;
+package io.chagchagchag.example.foobar.core.user.response;
 
 import io.chagchagchag.example.foobar.core.image.ProfileImageResponse;
 import java.util.Optional;

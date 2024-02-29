@@ -1,6 +1,7 @@
 package io.chagchagchag.example.foobar.core.user;
 
 import io.chagchagchag.example.foobar.core.image.ProfileImageResponse;
+import io.chagchagchag.example.foobar.core.user.response.UserResponse;
 import org.springframework.stereotype.Component;
 
 @Component
