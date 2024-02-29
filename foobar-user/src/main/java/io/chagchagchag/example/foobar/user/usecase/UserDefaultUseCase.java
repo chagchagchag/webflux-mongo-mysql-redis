@@ -3,6 +3,7 @@ package io.chagchagchag.example.foobar.user.usecase;
 import io.chagchagchag.example.foobar.core.image.ImageFactory;
 import io.chagchagchag.example.foobar.core.image.ImageMapper;
 import io.chagchagchag.example.foobar.core.image.ImageResponse;
+import io.chagchagchag.example.foobar.core.user.SignupUserRequest;
 import io.chagchagchag.example.foobar.core.user.User;
 import io.chagchagchag.example.foobar.dataaccess.user.entity.factory.UserEntityFactory;
 import io.chagchagchag.example.foobar.dataaccess.user.valueobject.UserEntityMapper;
@@ -51,10 +52,10 @@ public class UserDefaultUseCase {
 
   @Transactional
   public Mono<User> createUser(
-      String name, Integer age, String password, String profileImageId, ServerHttpResponse response
+      SignupUserRequest request, ServerHttpResponse response
   ){
     var newUserEntity = userEntityFactory
-        .ofCreateRoleUser(name, age, password, profileImageId);
+        .ofCreateRoleUser(request.name(), request.age(), request.password(), request.profileImageId());
 
     var emptyImage = imageFactory.emptyImage();
 

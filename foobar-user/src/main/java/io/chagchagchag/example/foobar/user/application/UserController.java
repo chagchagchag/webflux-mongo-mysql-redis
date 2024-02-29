@@ -56,10 +56,7 @@ public class UserController {
       ServerHttpResponse response
   ){
     return userDefaultUseCase
-        .createUser(
-            signupUserRequest.name(), signupUserRequest.age(), signupUserRequest.password(),
-            signupUserRequest.profileImageId(), response
-        )
+        .createUser(signupUserRequest, response)
         .map(user -> userMapper.toUserResponse(user));
   }
 
