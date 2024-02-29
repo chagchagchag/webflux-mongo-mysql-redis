@@ -7,9 +7,12 @@ import io.chagchagchag.example.foobar.core.user.User;
 import io.chagchagchag.example.foobar.dataaccess.user.entity.factory.UserEntityFactory;
 import io.chagchagchag.example.foobar.dataaccess.user.valueobject.UserEntityMapper;
 import io.chagchagchag.example.foobar.dataaccess.user.repository.UserR2dbcRepository;
+import io.chagchagchag.example.foobar.user.config.JwtProcessor;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,6 +21,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @Service
 public class UserDefaultUseCase {
+  private final JwtProcessor jwtProcessor;
+  private final PasswordEncoder bcryptPasswordEncoder;
   private final UserR2dbcRepository userR2dbcRepository;
   private final UserEntityFactory userEntityFactory;
   private final UserEntityMapper userEntityMapper;
@@ -40,20 +45,25 @@ public class UserDefaultUseCase {
               .map(r -> r.getBody())
               .map(imageMapper::fromImageResponse)
               .switchIfEmpty(Mono.just(imageFactory.emptyImage()))
-              .map(image -> userEntityMapper.fromUserEntity(userEntity, Optional.of(imageFactory.emptyImage())));
+              .map(image -> userEntityMapper.toUser(userEntity, Optional.of(imageFactory.emptyImage())));
         });
   }
 
   @Transactional
   public Mono<User> createUser(
-      String name, Integer age, String password, String profileImageId
+      String name, Integer age, String password, String profileImageId, ServerHttpResponse response
   ){
     var newUserEntity = userEntityFactory
-        .ofCreateUser(name, age, password, profileImageId);
+        .ofCreateRoleUser(name, age, password, profileImageId);
 
     var emptyImage = imageFactory.emptyImage();
 
     return userR2dbcRepository.save(newUserEntity)
-        .map(userEntity -> userEntityMapper.fromUserEntity(userEntity, Optional.of(emptyImage)));
+        .map(userEntity -> userEntityMapper.toUser(userEntity, Optional.of(emptyImage)))
+        .map(user -> {
+          String token = jwtProcessor.generateToken(SecurityProperties.key, user);
+          jwtProcessor.addJwtAtResponseHeader(token, response);
+          return user;
+        });
   }
 }

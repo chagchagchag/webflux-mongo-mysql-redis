@@ -27,6 +27,8 @@ dependencies {
   // reactor tool
   implementation("io.projectreactor:reactor-tools")
 
+  implementation("org.springframework.security:spring-security-core")
+
   runtimeOnly("com.mysql:mysql-connector-j")
   runtimeOnly("io.asyncer:r2dbc-mysql")
 

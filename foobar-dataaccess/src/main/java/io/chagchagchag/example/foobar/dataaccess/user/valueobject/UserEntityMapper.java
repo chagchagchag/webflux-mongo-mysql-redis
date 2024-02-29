@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserEntityMapper {
 
-  public User fromUserEntity(UserEntity userEntity, Optional<Image> profileImage){
+  public User toUser(UserEntity userEntity, Optional<Image> profileImage){
     return new User(
         String.valueOf(userEntity.getId()), userEntity.getName(), userEntity.getAge(),
         profileImage, List.of(), 0L

@@ -7,6 +7,7 @@ import io.chagchagchag.example.foobar.user.usecase.UserDefaultUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,12 +52,13 @@ public class UserController {
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/signup")
   public Mono<UserResponse> signupUser(
-      @RequestBody SignupUserRequest signupUserRequest
+      @RequestBody SignupUserRequest signupUserRequest,
+      ServerHttpResponse response
   ){
     return userDefaultUseCase
         .createUser(
             signupUserRequest.name(), signupUserRequest.age(), signupUserRequest.password(),
-            signupUserRequest.profileImageId()
+            signupUserRequest.profileImageId(), response
         )
         .map(user -> userMapper.toUserResponse(user));
   }
