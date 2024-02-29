@@ -5,7 +5,7 @@ import io.chagchagchag.example.foobar.core.image.ImageMapper;
 import io.chagchagchag.example.foobar.core.image.ImageResponse;
 import io.chagchagchag.example.foobar.core.user.User;
 import io.chagchagchag.example.foobar.dataaccess.user.entity.factory.UserEntityFactory;
-import io.chagchagchag.example.foobar.dataaccess.user.valueobject.UserMapper;
+import io.chagchagchag.example.foobar.dataaccess.user.valueobject.UserEntityMapper;
 import io.chagchagchag.example.foobar.dataaccess.user.repository.UserR2dbcRepository;
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 public class UserDefaultUseCase {
   private final UserR2dbcRepository userR2dbcRepository;
   private final UserEntityFactory userEntityFactory;
-  private final UserMapper userMapper;
+  private final UserEntityMapper userEntityMapper;
 
   private final ImageFactory imageFactory;
   private final ImageMapper imageMapper;
@@ -40,7 +40,7 @@ public class UserDefaultUseCase {
               .map(r -> r.getBody())
               .map(imageMapper::fromImageResponse)
               .switchIfEmpty(Mono.just(imageFactory.emptyImage()))
-              .map(image -> userMapper.fromUserEntity(userEntity, Optional.of(imageFactory.emptyImage())));
+              .map(image -> userEntityMapper.fromUserEntity(userEntity, Optional.of(imageFactory.emptyImage())));
         });
   }
 
@@ -54,6 +54,6 @@ public class UserDefaultUseCase {
     var emptyImage = imageFactory.emptyImage();
 
     return userR2dbcRepository.save(newUserEntity)
-        .map(userEntity -> userMapper.fromUserEntity(userEntity, Optional.of(emptyImage)));
+        .map(userEntity -> userEntityMapper.fromUserEntity(userEntity, Optional.of(emptyImage)));
   }
 }

@@ -9,7 +9,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper {
+public class UserEntityMapper {
 
   public User fromUserEntity(UserEntity userEntity, Optional<Image> profileImage){
     return new User(
