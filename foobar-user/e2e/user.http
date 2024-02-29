@@ -1,0 +1,8 @@
+###
+GET http://localhost:8080/api/users/100000
+
+> {%
+client.test("Status should be 401", function(){
+  client.assert(response.status === 401);
+});
+%}

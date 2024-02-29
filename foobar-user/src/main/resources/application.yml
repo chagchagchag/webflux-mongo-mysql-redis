@@ -3,3 +3,5 @@ spring:
     url: r2dbc:mysql://localhost:23306/example?useUnicode=true&serverTimezone=UTC
     username: user
     password: test1357
+server:
+  port: 8080
