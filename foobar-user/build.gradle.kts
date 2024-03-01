@@ -31,7 +31,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
 	// security
-	implementation("org.springframework.security:spring-security-core")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 
 	// jwt
 	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
