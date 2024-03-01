@@ -1,10 +1,9 @@
 package io.chagchagchag.example.foobar.user.config;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 
-@Configuration
+//@Configuration
 public class CorsGlobalConfig implements WebFluxConfigurer {
 
   @Override

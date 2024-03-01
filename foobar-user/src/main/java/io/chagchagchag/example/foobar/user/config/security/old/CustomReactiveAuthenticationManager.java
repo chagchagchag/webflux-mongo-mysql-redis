@@ -1,4 +1,4 @@
-package io.chagchagchag.example.foobar.user.config.security;
+package io.chagchagchag.example.foobar.user.config.security.old;
 
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.Authentication;

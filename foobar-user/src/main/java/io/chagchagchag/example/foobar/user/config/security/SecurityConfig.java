@@ -1,36 +1,45 @@
-package io.chagchagchag.example.foobar.user.config;
+package io.chagchagchag.example.foobar.user.config.security;
 
-import io.chagchagchag.example.foobar.core.user.jwt.JwtProcessor;
-import io.chagchagchag.example.foobar.user.config.security.JwtAuthenticationFilterBackup;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
+import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @EnableWebFluxSecurity
 @Configuration
 public class SecurityConfig {
 
-  private final JwtProcessor jwtProcessor;
-
-  // Reactive 버전으로 재작성 예정
   @Bean
   public SecurityWebFilterChain filterChain(
       ServerHttpSecurity httpSecurity,
-      AuthenticationConfiguration authenticationConfiguration
-  ) throws Exception {
-    var authenticationManager = authenticationConfiguration.getAuthenticationManager();
+      JwtServerAuthenticationConverter converter,
+      JwtAuthenticationManager authenticationManager
+  ){
+    var authenticationWebFilter = new AuthenticationWebFilter(authenticationManager);
+    authenticationWebFilter.setServerAuthenticationConverter(converter);
+
     return httpSecurity
+        .exceptionHandling(exceptionHandlingSpec ->
+            exceptionHandlingSpec.authenticationEntryPoint(
+                (exchange, ex) -> Mono.fromRunnable(() -> {
+                  exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                  exchange.getResponse().getHeaders().set(HttpHeaders.WWW_AUTHENTICATE, "Bearer");
+                })
+            )
+        )
         .csrf(csrfSpec -> csrfSpec.disable())
         .formLogin(formLoginSpec -> formLoginSpec.disable())
         .httpBasic(httpBasicSpec -> httpBasicSpec.disable())
-//        .addFilterAfter()
-//        .addFilterBefore(new JwtAuthenticationFilterBackup(authenticationManager, jwtProcessor))
         .headers(headerSpec -> headerSpec.frameOptions(frameOptionsSpec -> frameOptionsSpec.disable()))
+        .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
         .authorizeExchange(
             authorizeExchangeSpec ->
               authorizeExchangeSpec
@@ -39,7 +48,6 @@ public class SecurityConfig {
                   .pathMatchers("/logout", "/api/users/**")
                   .hasAnyAuthority("ROLE_USER", "ROLE_MANAGER", "ROLE_ADMIN")
         )
-        .securityContextRepository()
-
+        .build();
   }
 }

@@ -17,39 +17,38 @@ public class CustomUserDetails implements UserDetails {
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     List<GrantedAuthority> authorities = new ArrayList<>();
-    user
-        .parseRoleList()
+    user.parseRoleList()
         .forEach(r -> authorities.add(()->r));
     return authorities;
   }
 
   @Override
   public String getPassword() {
-    return null;
+    return user.getPassword(); // encrypted
   }
 
   @Override
   public String getUsername() {
-    return null;
+    return user.getName();
   }
 
   @Override
   public boolean isAccountNonExpired() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean isAccountNonLocked() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean isCredentialsNonExpired() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean isEnabled() {
-    return false;
+    return true;
   }
 }

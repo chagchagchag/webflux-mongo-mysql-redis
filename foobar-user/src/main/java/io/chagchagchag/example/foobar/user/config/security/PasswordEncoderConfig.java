@@ -1,4 +1,4 @@
-package io.chagchagchag.example.foobar.user.config;
+package io.chagchagchag.example.foobar.user.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

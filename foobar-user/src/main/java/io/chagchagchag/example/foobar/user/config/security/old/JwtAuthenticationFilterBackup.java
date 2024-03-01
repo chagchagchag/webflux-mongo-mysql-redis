@@ -1,4 +1,4 @@
-package io.chagchagchag.example.foobar.user.config.security;
+package io.chagchagchag.example.foobar.user.config.security.old;
 
 import io.chagchagchag.example.foobar.core.user.jwt.JwtDto;
 import io.chagchagchag.example.foobar.core.user.jwt.JwtProcessor;
