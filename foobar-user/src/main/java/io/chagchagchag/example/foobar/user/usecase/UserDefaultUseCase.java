@@ -54,7 +54,7 @@ public class UserDefaultUseCase {
       SignupUserRequest request, ServerHttpResponse response
   ){
     var newUserEntity = userEntityFactory
-        .ofCreateRoleUser(request.name(), request.age(), request.password(), request.profileImageId());
+        .ofCreateRoleUser(request.name(), request.age(), request.password(), null);
 
     var emptyImage = imageFactory.emptyImage();
 

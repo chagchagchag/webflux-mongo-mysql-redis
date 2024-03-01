@@ -3,6 +3,7 @@ CREATE TABLE example.USER(
     name VARCHAR(255) NOT NULL,
     age INT NOT NULL,
     profile_image_id BIGINT,
+    roles VARCHAR(255),
     password VARCHAR(255) NOT NULL,
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL

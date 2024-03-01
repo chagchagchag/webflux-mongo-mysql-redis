@@ -1,8 +1,36 @@
-###
+
+### 사용자가 생성되어 있지 않은 상태에서는 401
 GET http://localhost:8080/api/users/1
 
 > {%
 client.test("Status should be 401", function(){
   client.assert(response.status === 401);
 });
+%}
+
+
+### 사용자 가입 (사용자 생성)
+POST http://localhost:8080/api/users/signup
+Content-Type: application/json
+
+{
+  "name": "1번이에요",
+  "age": 11,
+  "password": 2222
+}
+
+> {%
+  client.test("Status should be 201", function(){
+    client.assert(response.status === 201);
+  });
+%}
+
+### 사용자 생성 후에는 정상 리스폰스
+### 사용자가 생성되어 있지 않은 상태에서는 401
+GET http://localhost:8080/api/users/1
+
+> {%
+  client.test("Status should be 200", function(){
+    client.assert(response.status === 200);
+  });
 %}
