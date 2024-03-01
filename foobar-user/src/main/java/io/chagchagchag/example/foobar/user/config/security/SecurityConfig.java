@@ -38,16 +38,19 @@ public class SecurityConfig {
         .csrf(csrfSpec -> csrfSpec.disable())
         .formLogin(formLoginSpec -> formLoginSpec.disable())
         .httpBasic(httpBasicSpec -> httpBasicSpec.disable())
+        .authorizeExchange(authorizeExchangeSpec ->
+            authorizeExchangeSpec
+                .pathMatchers("/", "/welcome", "/img/**", "/api/users/signup", "/healthcheck/**")
+                .permitAll()
+                .pathMatchers("/swagger-ui.html", "/webjars/**")
+                .permitAll()
+                .pathMatchers("/healthcheck/ready")
+                .permitAll()
+                .pathMatchers("/logout", "/api/users/**")
+                .hasAnyAuthority("ROLE_USER", "ROLE_MANAGER", "ROLE_ADMIN")
+        )
         .headers(headerSpec -> headerSpec.frameOptions(frameOptionsSpec -> frameOptionsSpec.disable()))
         .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
-        .authorizeExchange(
-            authorizeExchangeSpec ->
-              authorizeExchangeSpec
-                  .pathMatchers("/", "/welcome", "/img/**", "/api/users/signup")
-                  .permitAll()
-                  .pathMatchers("/logout", "/api/users/**")
-                  .hasAnyAuthority("ROLE_USER", "ROLE_MANAGER", "ROLE_ADMIN")
-        )
         .build();
   }
 }

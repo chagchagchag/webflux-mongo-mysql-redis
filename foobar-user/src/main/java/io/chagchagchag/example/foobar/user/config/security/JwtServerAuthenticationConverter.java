@@ -16,14 +16,10 @@ public class JwtServerAuthenticationConverter implements ServerAuthenticationCon
   @Override
   public Mono<Authentication> convert(ServerWebExchange exchange) {
     return Mono.justOrEmpty(exchange.getRequest())
-        .switchIfEmpty(Mono.error(new IllegalArgumentException("_____request 가 올바르지 않습니다.")))
-        .map(serverHttpRequest -> serverHttpRequest.getHeaders())
-        .switchIfEmpty(Mono.error(new IllegalArgumentException("_____header 가 비어 있습니다.")))
-        .map(httpHeaders -> httpHeaders.getFirst(HttpHeaders.AUTHORIZATION))
-        .switchIfEmpty(Mono.error(new IllegalArgumentException("_____Authorization 헤더가 누락되었습니다.")))
+        .flatMap(serverHttpRequest -> Mono.justOrEmpty(serverHttpRequest.getHeaders()))
+        .flatMap(httpHeaders -> Mono.justOrEmpty(httpHeaders.getFirst(HttpHeaders.AUTHORIZATION)))
         .filter(headerValue -> checkContainsBearer(headerValue))
-        .switchIfEmpty(Mono.error(new IllegalArgumentException("_____Bearer 를 전달받지 못했습니다.")))
-        .map(jwt -> new BearerToken(jwt));
+        .flatMap(jwt -> Mono.justOrEmpty(new BearerToken(jwt)));
   }
 
   public Boolean checkContainsBearer(String header){

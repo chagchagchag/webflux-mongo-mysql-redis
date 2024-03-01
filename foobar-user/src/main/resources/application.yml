@@ -5,3 +5,6 @@ spring:
     password: test1357
 server:
   port: 8080
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

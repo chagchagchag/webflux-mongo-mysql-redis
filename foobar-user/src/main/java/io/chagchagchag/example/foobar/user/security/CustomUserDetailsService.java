@@ -3,14 +3,14 @@ package io.chagchagchag.example.foobar.user.security;
 import io.chagchagchag.example.foobar.dataaccess.user.repository.UserR2dbcRepository;
 import io.chagchagchag.example.foobar.dataaccess.user.security.CustomUserDetailsMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Component
-public class CustomUserDetailsService extends MapReactiveUserDetailsService {
+public class CustomUserDetailsService implements ReactiveUserDetailsService {
   private final UserR2dbcRepository userR2dbcRepository;
   private final CustomUserDetailsMapper customUserDetailsMapper;
 
