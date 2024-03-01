@@ -1,9 +1,7 @@
 package io.chagchagchag.example.foobar.core.user.request;
 
-public record SignupUserRequest (
-    String name,
-    Integer age,
+public record UserLoginRequest (
+    String userId,
     String password
 ){
-
 }

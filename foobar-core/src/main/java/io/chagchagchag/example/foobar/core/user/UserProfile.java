@@ -5,7 +5,7 @@ import io.chagchagchag.example.foobar.core.image.Image;
 import java.util.List;
 import java.util.Optional;
 
-public record User (
+public record UserProfile(
     String id,
     String name,
     int age,

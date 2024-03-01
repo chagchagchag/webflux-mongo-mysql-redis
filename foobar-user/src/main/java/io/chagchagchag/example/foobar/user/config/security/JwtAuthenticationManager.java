@@ -3,7 +3,6 @@ package io.chagchagchag.example.foobar.user.config.security;
 import io.chagchagchag.example.foobar.core.user.jwt.JwtDto;
 import io.chagchagchag.example.foobar.core.user.jwt.JwtSupport;
 import io.chagchagchag.example.foobar.dataaccess.user.security.BearerToken;
-import io.chagchagchag.example.foobar.user.security.CustomUserDetailsService;
 import io.chagchagchag.example.foobar.user.usecase.SecurityProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -23,8 +22,29 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
     return Mono.justOrEmpty(authentication)
         .filter(auth -> auth instanceof BearerToken)
         .cast(BearerToken.class)
-        .flatMap(bearerToken -> validate(bearerToken))
+        .map(bearerToken -> degenerateToken(bearerToken))
+        .flatMap(jwtDto -> validateJwt(jwtDto))
+        .flatMap(jwtDto -> findUserById(jwtDto.id()))
         .onErrorMap(throwable -> new IllegalArgumentException("INVALID JWT"));
+  }
+
+  public JwtDto degenerateToken(BearerToken token){
+    return jwtSupport.degenerateToken(SecurityProperties.key, token.getJwt());
+  }
+
+  public Mono<JwtDto> validateJwt(JwtDto jwtDto){
+    if(jwtSupport.checkIfNotExpired(jwtDto.expiration())){
+      return Mono.just(jwtDto);
+    }
+    return Mono.error(new IllegalArgumentException("Token Invalid"));
+  }
+
+  private Mono<Authentication> findUserById(String userId){
+    return userDetailsService
+        .findByUsername(userId)
+        .map(userDetails -> new UsernamePasswordAuthenticationToken(
+            userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities()
+        ));
   }
 
   private Mono<Authentication> validate(BearerToken token){

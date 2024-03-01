@@ -1,6 +1,8 @@
 
+###
+
 ### 사용자가 생성되어 있지 않은 상태에서는 401
-GET http://localhost:8080/api/users/1
+GET http://localhost:8080/api/users/profile/1
 
 > {%
 client.test("Status should be 401", function(){
@@ -25,9 +27,20 @@ Content-Type: application/json
   });
 %}
 
+### 로그인
+POST http://localhost:8080/api/users/login
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "password": "2222"
+}
+
+
+
 ### 사용자 생성 후에는 정상 리스폰스
 ### 사용자가 생성되어 있지 않은 상태에서는 401
-GET http://localhost:8080/api/users/1
+GET http://localhost:8080/api/users/profile/1
 
 > {%
   client.test("Status should be 200", function(){

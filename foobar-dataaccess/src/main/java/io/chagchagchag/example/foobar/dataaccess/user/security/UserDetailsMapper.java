@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomUserDetailsMapper {
+public class UserDetailsMapper {
   public User defaultUserDetails(UserEntity userEntity){
     return new User(
         String.valueOf(userEntity.getId()),

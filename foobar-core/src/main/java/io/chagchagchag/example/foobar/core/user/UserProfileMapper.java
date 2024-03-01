@@ -5,12 +5,12 @@ import io.chagchagchag.example.foobar.core.user.response.UserResponse;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper {
+public class UserProfileMapper {
 
-  public UserResponse toUserResponse(User user){
+  public UserResponse toUserResponse(UserProfile userProfile){
     return new UserResponse(
-        user.id(), user.name(), user.age(), user.followCnt(),
-        user.profileImage().map(
+        userProfile.id(), userProfile.name(), userProfile.age(), userProfile.followCnt(),
+        userProfile.profileImage().map(
             image -> new ProfileImageResponse(
                 image.id(),
                 image.name(),

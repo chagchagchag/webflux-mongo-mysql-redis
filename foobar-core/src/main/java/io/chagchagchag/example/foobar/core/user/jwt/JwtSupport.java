@@ -1,6 +1,5 @@
 package io.chagchagchag.example.foobar.core.user.jwt;
 
-import io.chagchagchag.example.foobar.core.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
@@ -13,14 +12,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtSupport {
-  public String generateToken(Key key, User user){
+  public String generateToken(Key key, String userId, String username){
     return Jwts.builder()
-        .setSubject(user.name())
+        .setSubject(username)
         .setExpiration(new Date(System.currentTimeMillis() + 864000000))
-        .claim("id", user.id())
+        .claim("id", userId)
 //        .claim("email", userDetails.getUser().())
-        .claim("profileImageId", user.profileImage().map(image -> image.id()).orElse(""))
-        .claim("username", user.name())
+        .claim("username", username)
         .signWith(key, SignatureAlgorithm.HS256)
         .compact();
   }

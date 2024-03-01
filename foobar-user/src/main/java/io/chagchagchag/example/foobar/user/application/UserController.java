@@ -1,7 +1,9 @@
 package io.chagchagchag.example.foobar.user.application;
 
-import io.chagchagchag.example.foobar.core.user.request.SignupUserRequest;
-import io.chagchagchag.example.foobar.core.user.UserMapper;
+import io.chagchagchag.example.foobar.core.user.request.UserLoginRequest;
+import io.chagchagchag.example.foobar.core.user.request.UserSignupRequest;
+import io.chagchagchag.example.foobar.core.user.UserProfileMapper;
+import io.chagchagchag.example.foobar.core.user.response.UserLoginResponse;
 import io.chagchagchag.example.foobar.core.user.response.UserResponse;
 import io.chagchagchag.example.foobar.user.usecase.UserDefaultUseCase;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +28,9 @@ import reactor.core.publisher.Mono;
 public class UserController {
 
   private final UserDefaultUseCase userDefaultUseCase;
-  private final UserMapper userMapper;
+  private final UserProfileMapper userProfileMapper;
 
-  @GetMapping("/{userId}")
+  @GetMapping("/profile/{userId}")
   public Mono<UserResponse> getUserById(
       @PathVariable String userId
   ){
@@ -45,7 +47,7 @@ public class UserController {
           }
 
           return userDefaultUseCase.findByUserId(userId)
-              .map(user -> userMapper.toUserResponse(user))
+              .map(user -> userProfileMapper.toUserResponse(user))
               .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)));
         })
         .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED)));
@@ -54,12 +56,21 @@ public class UserController {
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/signup")
   public Mono<UserResponse> signupUser(
-      @RequestBody SignupUserRequest signupUserRequest,
+      @RequestBody UserSignupRequest userSignupRequest,
       ServerHttpResponse response
   ){
     return userDefaultUseCase
-        .createUser(signupUserRequest, response)
-        .map(user -> userMapper.toUserResponse(user));
+        .createUser(userSignupRequest, response)
+        .map(user -> userProfileMapper.toUserResponse(user));
+  }
+
+  @PostMapping("/login")
+  public Mono<UserLoginResponse> login(
+      @RequestBody UserLoginRequest userLoginRequest,
+      ServerHttpResponse response
+  ){
+    return userDefaultUseCase
+        .login(userLoginRequest, response);
   }
 
 }
