@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -42,9 +43,13 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
   private Mono<Authentication> findUserById(String userId){
     return userDetailsService
         .findByUsername(userId)
-        .map(userDetails -> new UsernamePasswordAuthenticationToken(
-            userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities()
-        ));
+        .map(userDetails -> {
+          var authentication = new UsernamePasswordAuthenticationToken(
+              userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities()
+          );
+          SecurityContextHolder.getContext().setAuthentication(authentication);
+          return authentication;
+        });
   }
 
   private Mono<Authentication> validate(BearerToken token){
