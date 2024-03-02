@@ -3,5 +3,6 @@ include(
         "foobar-core",
         "foobar-dataaccess",
         "foobar-user",
-        "foobar-image"
+        "foobar-image",
+        "foobar-sse",
 )

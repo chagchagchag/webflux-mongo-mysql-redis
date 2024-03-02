@@ -1,0 +1,14 @@
+
+GET http://localhost:8080/api/notify
+
+###
+
+POST http://localhost:8080/api/notify
+Content-Type: application/json
+
+{
+  "type": "NEW_POST",
+  "message": "새로운 글이 등록되었어요"
+}
+
+###
