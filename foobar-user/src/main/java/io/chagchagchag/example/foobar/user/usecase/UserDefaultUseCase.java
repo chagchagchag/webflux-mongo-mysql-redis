@@ -8,15 +8,15 @@ import io.chagchagchag.example.foobar.core.user.jwt.JwtSupport;
 import io.chagchagchag.example.foobar.core.user.request.UserLoginRequest;
 import io.chagchagchag.example.foobar.core.user.request.UserSignupRequest;
 import io.chagchagchag.example.foobar.core.user.response.UserLoginResponse;
+import io.chagchagchag.example.foobar.dataaccess.user.entity.UserEntity;
 import io.chagchagchag.example.foobar.dataaccess.user.entity.factory.UserEntityFactory;
 import io.chagchagchag.example.foobar.dataaccess.user.repository.UserR2dbcRepository;
 import io.chagchagchag.example.foobar.dataaccess.user.valueobject.UserEntityMapper;
-import io.chagchagchag.example.foobar.user.config.security.CustomUserDetailsService;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +31,6 @@ public class UserDefaultUseCase {
   private final UserR2dbcRepository userR2dbcRepository;
   private final UserEntityFactory userEntityFactory;
   private final UserEntityMapper userEntityMapper;
-  private final CustomUserDetailsService userDetailsService;
 
   private final ImageFactory imageFactory;
   private final ImageMapper imageMapper;
@@ -75,20 +74,21 @@ public class UserDefaultUseCase {
   }
 
   public Mono<UserLoginResponse> login(UserLoginRequest userLoginRequest, ServerHttpResponse response) {
-    return findUser(userLoginRequest.userId(), userLoginRequest.password())
-        .map(userDetails -> {
-          final String jwt = generateToken(userDetails, userLoginRequest.userId(), userDetails.getUsername());
+    var requestToken = new UsernamePasswordAuthenticationToken(userLoginRequest.userId(), userLoginRequest.password());
+    return findUser(requestToken)
+        .map(userEntity -> {
+          final String jwt = generateToken(userLoginRequest.userId(), userEntity.getName());
           jwtSupport.addJwtAtResponseHeader(jwt, response);
-          return userDetails;
-        })
-        .map(userDetails -> new UserLoginResponse("OK", Boolean.TRUE));
+          return new UserLoginResponse("OK", Boolean.TRUE);
+        });
   }
 
-  public Mono<UserDetails> findUser(String userId, String password){
-    return userDetailsService.findByUsername(userId)
-        .map(userDetails -> {
-          validatePassword(password, userDetails.getPassword());
-          return userDetails;
+  public Mono<UserEntity> findUser(UsernamePasswordAuthenticationToken requestToken){
+    return userR2dbcRepository
+        .findById(Long.parseLong(requestToken.getName()))
+        .map(userEntity -> {
+          validatePassword(String.valueOf(requestToken.getCredentials()), userEntity.getPassword());
+          return userEntity;
         });
   }
 
@@ -98,7 +98,7 @@ public class UserDefaultUseCase {
     }
   }
 
-  public String generateToken(UserDetails userDetails, String userId, String username){
+  public String generateToken(String userId, String username){
     return jwtSupport.generateToken(SecurityProperties.key, userId, username);
   }
 
