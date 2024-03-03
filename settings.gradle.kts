@@ -5,5 +5,6 @@ include(
         "foobar-user",
         "foobar-image",
         "foobar-sse",
-        "foobar-websocket"
+        "foobar-websocket",
+        "demo-concurrent"
 )
