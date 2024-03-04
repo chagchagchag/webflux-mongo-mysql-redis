@@ -19,8 +19,6 @@ public class JwtProcessor {
         .setSubject(userProfile.name())
         .setExpiration(new Date(System.currentTimeMillis() + 864000000))
         .claim("id", userProfile.id())
-//        .claim("email", userDetails.getUser().())
-        .claim("profileImageId", userProfile.profileImage().map(image -> image.id()).orElse(""))
         .claim("username", userProfile.name())
         .signWith(key, SignatureAlgorithm.HS256)
         .compact();
@@ -39,9 +37,7 @@ public class JwtProcessor {
 
     return new JwtDto(
         claimsJws.getBody().get("id", String.class),
-        claimsJws.getBody().get("profileImageId", String.class),
         claimsJws.getBody().get("username", String.class),
-//        claimsJws.getBody().get("password", String.class),
         claimsJws.getBody().getExpiration()
     );
   }

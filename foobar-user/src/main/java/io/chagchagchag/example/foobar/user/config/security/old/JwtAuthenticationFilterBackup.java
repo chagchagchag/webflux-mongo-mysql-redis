@@ -42,7 +42,7 @@ public class JwtAuthenticationFilterBackup extends AuthenticationWebFilter {
             throw new IllegalStateException("로그인기한 만료");
           }
 
-          var auth = new UsernamePasswordAuthenticationToken(jwtDto.username(), jwtDto.email());
+          var auth = new UsernamePasswordAuthenticationToken(jwtDto.id(), jwtDto.username());
           authenticationManager.authenticate(auth);
           SecurityContextHolder.getContext().setAuthentication(auth);
         });

@@ -17,7 +17,6 @@ public class JwtSupport {
         .setSubject(username)
         .setExpiration(new Date(System.currentTimeMillis() + 864000000))
         .claim("id", userId)
-//        .claim("email", userDetails.getUser().())
         .claim("username", username)
         .signWith(key, SignatureAlgorithm.HS256)
         .compact();
@@ -36,9 +35,7 @@ public class JwtSupport {
 
     return new JwtDto(
         claimsJws.getBody().get("id", String.class),
-        claimsJws.getBody().get("profileImageId", String.class),
         claimsJws.getBody().get("username", String.class),
-//        claimsJws.getBody().get("password", String.class),
         claimsJws.getBody().getExpiration()
     );
   }
