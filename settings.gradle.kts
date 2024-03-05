@@ -6,5 +6,6 @@ include(
         "foobar-image",
         "foobar-sse",
         "foobar-websocket",
-        "demo-concurrent"
+        "demo-concurrent",
+        "demo-nio"
 )
