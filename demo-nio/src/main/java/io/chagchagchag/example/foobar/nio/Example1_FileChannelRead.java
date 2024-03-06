@@ -2,7 +2,6 @@ package io.chagchagchag.example.foobar.nio;
 
 import java.io.File;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import lombok.SneakyThrows;
