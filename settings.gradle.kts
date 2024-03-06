@@ -7,5 +7,6 @@ include(
         "foobar-sse",
         "foobar-websocket",
         "demo-concurrent",
-        "demo-nio"
+        "demo-nio",
+        "demo-aio"
 )
