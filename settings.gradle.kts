@@ -8,5 +8,6 @@ include(
         "foobar-websocket",
         "demo-concurrent",
         "demo-nio",
-        "demo-aio"
+        "demo-aio",
+        "demo-reactive-streams"
 )
