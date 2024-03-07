@@ -10,5 +10,6 @@ include(
         "demo-nio",
         "demo-aio",
         "demo-reactive-streams",
-        "demo-reactive-streams-libraries"
+        "demo-reactive-streams-libraries",
+        "demo-spring-webflux"
 )
