@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServer;
 
 @Slf4j
-public class WebHandlerExample1 {
+public class HttpHandlerExample1 {
   @SneakyThrows
   public static void main(String[] args) {
     log.info("main function started");
