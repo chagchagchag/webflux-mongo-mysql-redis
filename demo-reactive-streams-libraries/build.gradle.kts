@@ -23,6 +23,15 @@ dependencies {
   // springdoc
   implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0")
 
+  // reactor-core
+  implementation("io.projectreactor:reactor-core:3.6.2")
+
+  // rxjava
+  implementation("io.reactivex.rxjava3:rxjava:3.1.8")
+
+  // mutiny
+  implementation("io.smallrye.reactive:mutiny:2.5.7")
+
   // reactor tool
   implementation("io.projectreactor:reactor-tools")
 

@@ -9,5 +9,6 @@ include(
         "demo-concurrent",
         "demo-nio",
         "demo-aio",
-        "demo-reactive-streams"
+        "demo-reactive-streams",
+        "demo-reactive-streams-libraries"
 )
