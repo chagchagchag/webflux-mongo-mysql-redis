@@ -50,4 +50,8 @@ public class StreamFunctionsConfig {
     });
   }
 
+  @Bean
+  public Function<Flux<String>, Flux<Integer>> toLengthList(){
+    return strFlux -> strFlux.map(String::length);
+  }
 }
