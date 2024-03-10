@@ -2,7 +2,11 @@ package io.chagchagchag.example.foobar.spring_cloud_stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -69,6 +73,26 @@ public class SpringCloudFunctionTest {
   }
 
 
-  // Function (stringToUsBigDecimal)
+  // Function (stringToBigDecimal)
+  @DisplayName("STRING_TO_BIG_DECIMAL")
+  @Test
+  public void TEST_STRING_TO_BIG_DECIMAL() throws ParseException {
+    // given
+    var inputBinding = "stringToBigDecimal-in-0";
+    var outputBinding = "stringToBigDecimal-out-0";
+    var input = new GenericMessage<>("28.39");
+    var expected = BigDecimal.valueOf(28.39);
+
+    // when
+    // 먼저 값을 보낸다.
+    inputDestination.send(input, inputBinding);
+
+    // then
+    // 치리되어 반환하는 값을 받는다.
+    var received = outputDestination.receive(30, outputBinding);
+    var receivedStr = new String(received.getPayload());
+    var receivedDecimal = new BigDecimal(receivedStr);
+    assertThat(receivedDecimal).isEqualTo(expected);
+  }
 
 }
