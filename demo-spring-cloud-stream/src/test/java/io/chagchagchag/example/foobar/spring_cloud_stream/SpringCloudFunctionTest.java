@@ -3,10 +3,8 @@ package io.chagchagchag.example.foobar.spring_cloud_stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

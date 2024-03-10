@@ -1,1 +1,118 @@
-
+version: '3.7'
+services:
+  schema-registry:
+    image: confluentinc/cp-schema-registry:${KAFKA_VERSION}
+    container_name: kafka-schema-registry
+    hostname: schema-registry
+    depends_on:
+      - kafka-broker-1
+      - kafka-broker-2
+      - kafka-broker-3
+    ports:
+      - "9397:9397"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
+      SCHEMA_REGISTRY_LISTENERS: http://schema-registry:9397
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-broker-2:9092,LISTENER_LOCAL://kafka-broker-2:29092
+      SCHEMA_REGISTRY_DEBUG: 'true'
+    networks:
+      - kafka-local-all
+  kafka-connector:
+    image: confluentinc/cp-kafka-connect:${KAFKA_VERSION}
+    container_name: kafka-connector
+    ports:
+      - 9398:9398
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-broker-2:9092,LISTENER_LOCAL://kafka-broker-2:29092
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: "quickstart-avro"
+      CONNECT_CONFIG_STORAGE_TOPIC: "quickstart-avro-config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "quickstart-avro-offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "quickstart-avro-status"
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "kafka-connector"
+      CONNECT_LOG4J_ROOT_LOGLEVEL: DEBUG
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/etc/kafka-connect/jars"
+    depends_on:
+      - kafka-broker-1
+      - kafka-broker-2
+      - kafka-broker-3
+      - schema-registry
+    volumes:
+      - "./kafka-connect/connectors:/etc/kafka-connect/jars"
+    networks:
+      - kafka-local-all
+  kafka-broker-1:
+    image: confluentinc/cp-kafka:${KAFKA_VERSION}
+    container_name: kafka-broker-1
+    hostname: kafka-broker-1
+    ports:
+      - "19092:19092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-broker-1:9092,LISTENER_LOCAL://kafka-broker-1:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,LISTENER_LOCAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_COMPRESSION_TYPE: producer
+    volumes:
+      - "./volumes/kafka/broker-1:/var/lib/kafka/data"
+    networks:
+      - kafka-local-all
+  kafka-broker-2:
+    image: confluentinc/cp-kafka:${KAFKA_VERSION}
+    container_name: kafka-broker-2
+    hostname: kafka-broker-2
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-broker-2:9092,LISTENER_LOCAL://kafka-broker-2:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,LISTENER_LOCAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_COMPRESSION_TYPE: producer
+    volumes:
+      - "./volumes/kafka/broker-2:/var/lib/kafka/data"
+    networks:
+      - kafka-local-all
+  kafka-broker-3:
+    image: confluentinc/cp-kafka:${KAFKA_VERSION}
+    container_name: kafka-broker-3
+    hostname: kafka-broker-3
+    ports:
+      - "39092:39092"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-broker-3:9092,LISTENER_LOCAL://kafka-broker-3:39092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,LISTENER_LOCAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_COMPRESSION_TYPE: producer
+    volumes:
+      - "./volumes/kafka/broker-3:/var/lib/kafka/data"
+    networks:
+      - kafka-local-all
+  kafka-manager:
+    image: hlebalbau/kafka-manager:stable
+    restart: always
+    ports:
+      - "9090:9090"
+    environment:
+      ZK_HOSTS: "zookeeper:2181"
+    networks:
+      - kafka-local-all
+networks:
+  kafka-local-all:
+    driver: bridge
+#    external: true # network 가 이미 있을 경우에 삭제 안하고 할 경우에 사용
