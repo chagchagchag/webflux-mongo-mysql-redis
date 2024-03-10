@@ -1,0 +1,32 @@
+spring:
+  cloud:
+    function:
+      definition: livenessCheck;appendCurrTime;logLiveness
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092,localhost:9093,localhost:9094
+        bindings:
+          appendCurrTime-in-0:
+            consumer:
+              start-offset: latest
+          logLiveness-in-0:
+            consumer:
+              start-offset: earliest
+      bindings:
+        livenessCheck-out-0:
+          binder: kafka
+          destination: liveness
+          content-type: text/plain
+        appendCurrTime-in-0:
+          binder: kafka
+          destination: liveness
+          content-type: text/plain
+        appendCurrTime-out-0:
+          binder: kafka
+          destination: liveness_history
+          content-type: text/plain
+        logLiveness-in-0:
+          binder: kafka
+          destination: liveness
+          content-type: text/plain

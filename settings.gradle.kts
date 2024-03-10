@@ -12,5 +12,6 @@ include(
         "demo-reactive-streams",
         "demo-reactive-streams-libraries",
         "demo-spring-webflux",
-        "demo-spring-cloud-stream"
+        "demo-spring-cloud-stream",
+        "demo-spring-cloud-stream-kafka",
 )
