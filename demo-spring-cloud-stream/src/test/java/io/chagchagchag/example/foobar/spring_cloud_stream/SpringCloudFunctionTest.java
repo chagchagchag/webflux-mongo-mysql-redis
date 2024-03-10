@@ -2,6 +2,7 @@ package io.chagchagchag.example.foobar.spring_cloud_stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,6 +51,23 @@ public class SpringCloudFunctionTest {
   }
 
   // Supplier (livenessCheck)
+  @DisplayName("LIVENESS_CHECK_STREAM_MESSAGING")
+  @Test
+  public void TEST_LIVENESS_CHECK_STREAM_MESSAGING(){
+    // given
+    var outputBinding = "livenessCheck-out-0";
+    var expectedMsg = List.of("OK");
+
+    for(var name: expectedMsg){
+      // when
+      var received = outputDestination.receive(300, outputBinding);
+      String outputMessage = new String(received.getPayload());
+
+      // then
+      assertThat(outputMessage.equals(name)).isTrue();
+    }
+  }
+
 
   // Function (stringToUsBigDecimal)
 
