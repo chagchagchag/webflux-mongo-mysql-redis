@@ -1,0 +1,24 @@
+resilience4j:
+  circuitbreaker:
+    instances:
+      basic:
+        sliding-window-size: 10
+        failure-rate-threshold: 70
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state:
+          seconds: 5s
+        permitted-number-of-calls-in-half-open-state: 6
+        ignore-exceptions:
+          - java.lang.IllegalCallerException
+        max-wait-duration-in-half-open-state:
+          seconds: 30s
+    configs:
+      default:
+        register-health-indicator: true
+        sliding-window-size: 50
+  timelimiter:
+    instances:
+      basic:
+        timeout-duration:
+          seconds: 1
+        cancel-running-future: true
