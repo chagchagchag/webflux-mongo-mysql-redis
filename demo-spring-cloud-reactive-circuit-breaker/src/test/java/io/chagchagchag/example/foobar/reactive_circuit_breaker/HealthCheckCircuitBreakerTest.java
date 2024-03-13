@@ -4,11 +4,14 @@ package io.chagchagchag.example.foobar.reactive_circuit_breaker;
 import static org.mockito.Mockito.never;
 
 import io.chagchagchag.example.foobar.reactive_circuit_breaker.common.Ready;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.springboot3.circuitbreaker.autoconfigure.CircuitBreakerAutoConfiguration;
 import io.github.resilience4j.springboot3.timelimiter.autoconfigure.TimeLimiterAutoConfiguration;
 import java.time.Duration;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -156,6 +159,64 @@ public class HealthCheckCircuitBreakerTest {
     Mockito.verify(ready, Mockito.times(3)).ok(serviceName);
   }
 
+  // 회로차단기 OPEN (ON) 상태 -> HALF OPEN 상태 테스트 케이스
+  @DisplayName("READY_METHOD_MAKE_CB_STATE_FROM_OPEN_TO_HALF_OPEN_DEFAULT_OPTION")
+  @Test
+  public void TEST_READY_METHOD_MAKE_CB_STATE_FROM_OPEN_TO_HALF_OPEN_DEFAULT_OPTION(){
+    // given
+    String serviceName = "order-service";
+    String successMessage = String.format("OK (%s)", serviceName);
 
+    // 차단(OPEN, ON) 된 차단기 준비
+    for(int i=0; i<3; i++){
+      StepVerifier.withVirtualTime(()->reactiveHealthcheckService.readyWithId("tiny", serviceName, 5000L))
+          .thenAwait(Duration.ofSeconds(2))
+          .expectNext(fallbackMessage)
+          .verifyComplete();
+    }
+
+    // when
+    var tinyCb = circuitBreakerRegistry.circuitBreaker("tiny");
+    tinyCb.transitionToHalfOpenState();
+    log.info("Half Open 상태로 전환 완료");
+
+    // then
+    var state = circuitBreakerRegistry.circuitBreaker("tiny").getState();
+    Assertions.assertThat(state).isEqualTo(CircuitBreaker.State.HALF_OPEN);
+
+    StepVerifier.create(reactiveHealthcheckService.readyWithId("tiny", serviceName, 0L))
+        .expectNext(successMessage)
+        .verifyComplete();
+  }
+
+  @SneakyThrows
+  @DisplayName("READY_METHOD_MAKE_CB_STATE_FROM_OPEN_TO_HALF_OPEN_AUTO_DETECT")
+  @Test
+  public void TEST_READY_METHOD_MAKE_CB_STATE_FROM_OPEN_TO_HALF_OPEN_AUTO_DETECT(){
+    // given
+    String serviceName = "order-service";
+    String successMessage = String.format("OK (%s)", serviceName);
+
+    // 회로차단기가 ON (OPEN) 되도록 지연을 유발하는 CALL 호출 3회 수행
+    for(int i=0; i<3; i++){
+      StepVerifier
+          .withVirtualTime(()-> reactiveHealthcheckService.readyWithId("autoHalf", serviceName, 5000L))
+          .thenAwait(Duration.ofSeconds(3))
+          .expectNext(fallbackMessage)
+          .verifyComplete();
+    }
+
+    // when
+    log.info("7초 대기");
+    Thread.sleep(7000);
+
+    // then
+    var state = circuitBreakerRegistry.circuitBreaker("autoHalf").getState();
+    Assertions.assertThat(state).isEqualTo(CircuitBreaker.State.HALF_OPEN);
+
+    StepVerifier.create(reactiveHealthcheckService.readyWithId("autoHalf", serviceName, 0L))
+        .expectNext(successMessage)
+        .verifyComplete();
+  }
 
 }

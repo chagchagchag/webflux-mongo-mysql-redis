@@ -98,7 +98,7 @@ public class TestCircuitBreakerConfig {
   public Customizer<ReactiveResilience4JCircuitBreakerFactory> autoHalf(){
     var cbConfig = CircuitBreakerConfig.custom()
         .failureRateThreshold(50)
-        .slidingWindowSize(4)
+        .slidingWindowSize(3)
         .enableAutomaticTransitionFromOpenToHalfOpen() // auto half 설정
         .waitDurationInOpenState(Duration.ofSeconds(5))
         .build();
