@@ -117,7 +117,7 @@ public class TestCircuitBreakerConfig {
   public Customizer<ReactiveResilience4JCircuitBreakerFactory> halfOpen() {
     var cbConfig = CircuitBreakerConfig.custom()
         .failureRateThreshold(50)
-        .slidingWindowSize(4)
+        .slidingWindowSize(3)
         .enableAutomaticTransitionFromOpenToHalfOpen()
         .waitDurationInOpenState(Duration.ofSeconds(3))
         .permittedNumberOfCallsInHalfOpenState(6) //

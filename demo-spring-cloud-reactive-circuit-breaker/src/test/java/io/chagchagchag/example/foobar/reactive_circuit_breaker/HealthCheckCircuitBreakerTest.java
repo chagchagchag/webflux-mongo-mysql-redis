@@ -219,4 +219,98 @@ public class HealthCheckCircuitBreakerTest {
         .verifyComplete();
   }
 
+  // half open -> close (차단기 OFF)
+  @SneakyThrows
+  @DisplayName("READY_METHOD_MAKE_CB_STATE_FROM_HALF_OPEN_TO_CLOSE")
+  @Test
+  public void TEST_READY_METHOD_MAKE_CB_STATE_FROM_HALF_OPEN_TO_CLOSE(){
+    // given
+    String serviceName = "order-service";
+    String successMessage = String.format("OK (%s)", serviceName);
+    String cbId = "halfOpen";
+
+    for(int i=0; i<3; i++){
+      StepVerifier.withVirtualTime(() -> reactiveHealthcheckService.readyWithId(cbId, serviceName, 5000L))
+          .thenAwait(Duration.ofSeconds(2))
+          .expectNext(fallbackMessage)
+          .verifyComplete();
+    }
+
+    log.info("3초 대기");
+    Thread.sleep(3000);
+
+    // when
+    var successCnt = 4;
+    var failCnt = 2;
+    var total = successCnt + failCnt;
+
+    // 1) 4번 성공시킴
+    for(int i=0; i<successCnt; i++){
+      StepVerifier.withVirtualTime(() -> reactiveHealthcheckService.readyWithId(cbId, serviceName, 0L))
+          .expectNext(successMessage)
+          .verifyComplete();
+    }
+    // 2) 2번 실패 시킴
+    for(int i=0; i<failCnt; i++){
+      StepVerifier.withVirtualTime(() -> reactiveHealthcheckService.readyWithId(cbId, serviceName, 5000L))
+          .thenAwait(Duration.ofSeconds(2))
+          .expectNext(fallbackMessage)
+          .verifyComplete();
+    }
+
+    // then
+    var state = circuitBreakerRegistry
+        .circuitBreaker(cbId)
+        .getState();
+
+    Assertions.assertThat(state).isEqualTo(CircuitBreaker.State.CLOSED);
+  }
+
+  // half open -> open (차단기 ON)
+  @SneakyThrows
+  @DisplayName("READY_METHOD_MAKE_CB_STATE_FROM_HALF_OPEN_TO_OPEN")
+  @Test
+  public void TEST_READY_METHOD_MAKE_CB_STATE_FROM_HALF_OPEN_TO_OPEN(){
+    // given
+    String serviceName = "order-service";
+    String successMessage = String.format("OK (%s)", serviceName);
+    String cbId = "halfOpen";
+
+    for(int i=0; i<3; i++){
+      StepVerifier
+          .withVirtualTime(() -> reactiveHealthcheckService.readyWithId(cbId, serviceName, 5000L))
+          .thenAwait(Duration.ofSeconds(2))
+          .expectNext(fallbackMessage)
+          .verifyComplete();
+    }
+
+    log.info("3초 대기");
+    Thread.sleep(3000);
+
+    // when (실패율 50% 로 조정)
+    var successCnt = 3;
+    var failCnt = 3;
+    var total = successCnt + failCnt;
+
+    for(int i=0; i<successCnt; i++){
+      StepVerifier
+          .create(reactiveHealthcheckService.readyWithId(cbId, serviceName, 0L))
+          .expectNext(successMessage)
+          .verifyComplete();
+    }
+
+    for(int i=0; i<failCnt; i++){
+      StepVerifier
+          .withVirtualTime(() -> reactiveHealthcheckService.readyWithId(cbId, serviceName, 5000L))
+          .thenAwait(Duration.ofSeconds(2))
+          .expectNext(fallbackMessage)
+          .verifyComplete();
+    }
+
+    // then
+    var state = circuitBreakerRegistry.circuitBreaker(cbId)
+        .getState();
+    Assertions.assertThat(state).isEqualTo(CircuitBreaker.State.OPEN);
+  }
+
 }
