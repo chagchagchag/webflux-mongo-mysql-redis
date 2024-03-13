@@ -75,7 +75,6 @@ public class HealthCheckCircuitBreakerTest {
     Mockito.verify(ready).ok(serviceName);
   }
 
-  // ready() 메서드의 실행 시간이 test 설정에 해둔 5초를 넘어가지 않을 경우 정상
   @DisplayName("READY_WITH_3000MS_AND_WAIT_1S")
   @Test
   public void TEST_READY_WITH_3000MS_AND_WAIT_1S(){
