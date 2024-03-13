@@ -17,11 +17,15 @@ public class ReactiveHealthcheckService {
 
   private final String fallbackMessage = "FoobarHealthCircuitBreaker Fallback";
 
-  public Mono<String> ready(String from, Long delayMs){
+  public Mono<String> delayedOk(String from, Long delayMs){
     var duration = Duration.ofMillis(delayMs);
     return Mono.delay(duration)
         .then()
-        .then(Mono.fromCallable(() -> ready.ok(from)))
+        .then(Mono.fromCallable(() -> ready.ok(from)));
+  }
+
+  public Mono<String> ready(String from, Long delayMs){
+    return delayedOk(from, delayMs)
         .transform(it -> {
           var cb = healthCheckCircuitBreaker.create("normal");
           return cb.run(it, throwable -> Mono.just(fallbackMessage));
@@ -39,7 +43,7 @@ public class ReactiveHealthcheckService {
   }
 
   public Mono<String> readyWithId(String id, String from, Long delayMs){
-    return ready.delayedOk(from, delayMs)
+    return delayedOk(from, delayMs)
         .transform(it -> {
           var cb = healthCheckCircuitBreaker.create(id);
           return cb.run(it, throwable -> Mono.just(fallbackMessage));
@@ -49,7 +53,7 @@ public class ReactiveHealthcheckService {
   public Mono<String> readyWithIdAndGroup(
       String id, String group, String from, Long delayMs
   ){
-    return ready.delayedOk(from, delayMs)
+    return delayedOk(from, delayMs)
         .transform(it -> {
           var cb = healthCheckCircuitBreaker.create(id, group);
           return cb.run(it, throwable -> Mono.just(fallbackMessage));
