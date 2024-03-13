@@ -8,5 +8,4 @@ public class Ready {
     return String.format("OK (%s)", serviceName);
   }
 
-
 }

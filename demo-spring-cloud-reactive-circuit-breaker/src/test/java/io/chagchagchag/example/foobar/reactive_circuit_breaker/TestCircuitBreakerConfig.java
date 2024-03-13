@@ -7,6 +7,7 @@ import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
+import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
 import org.springframework.cloud.client.circuitbreaker.Customizer;
 import org.springframework.context.annotation.Bean;
 
@@ -62,5 +63,74 @@ public class TestCircuitBreakerConfig {
                   cbName, event.getFailureRate()));
 
     }, CircuitBreaker::getName);
+  }
+
+  @Bean
+  public Customizer<ReactiveResilience4JCircuitBreakerFactory> defaultCustomizer(){
+    return factory -> {
+      factory.configureDefault(id -> {
+        factory.addCircuitBreakerCustomizer(loggingCustomizer(), id);
+        return new Resilience4JConfigBuilder(id)
+            .circuitBreakerConfig(CircuitBreakerConfig.ofDefaults())
+            .build();
+      });
+    };
+  }
+
+  @Bean
+  public Customizer<ReactiveResilience4JCircuitBreakerFactory> tinyCustomizer(){
+    var cbConfig = CircuitBreakerConfig.custom()
+        .failureRateThreshold(50)
+        .slidingWindowSize(3)
+        .build();
+
+    var targets = new String[]{"tiny"};
+    return factory -> {
+      factory.addCircuitBreakerCustomizer(loggingCustomizer(), targets);
+      factory.configure(
+          builder -> builder.circuitBreakerConfig(cbConfig),
+          targets
+      );
+    };
+  }
+
+  @Bean
+  public Customizer<ReactiveResilience4JCircuitBreakerFactory> autoHalf(){
+    var cbConfig = CircuitBreakerConfig.custom()
+        .failureRateThreshold(50)
+        .slidingWindowSize(4)
+        .enableAutomaticTransitionFromOpenToHalfOpen() // auto half 설정
+        .waitDurationInOpenState(Duration.ofSeconds(5))
+        .build();
+
+    var targets = new String[]{"autoHalf"};
+    return factory -> {
+      factory.addCircuitBreakerCustomizer(
+          loggingCustomizer(), targets);
+      factory.configure(builder -> {
+        builder.circuitBreakerConfig(cbConfig);
+      }, targets);
+    };
+  }
+
+  @Bean
+  public Customizer<ReactiveResilience4JCircuitBreakerFactory> halfOpen() {
+    var cbConfig = CircuitBreakerConfig.custom()
+        .failureRateThreshold(50)
+        .slidingWindowSize(4)
+        .enableAutomaticTransitionFromOpenToHalfOpen()
+        .waitDurationInOpenState(Duration.ofSeconds(3))
+        .permittedNumberOfCallsInHalfOpenState(6) //
+        .build();
+
+    var targets = new String[]{"halfOpen"};
+
+    return factory -> {
+      factory.addCircuitBreakerCustomizer(loggingCustomizer(), targets);
+      factory.configure(
+          builder -> builder.circuitBreakerConfig(cbConfig),
+          targets
+      );
+    };
   }
 }
