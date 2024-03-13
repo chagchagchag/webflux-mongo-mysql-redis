@@ -14,5 +14,6 @@ include(
         "demo-spring-webflux",
         "demo-spring-cloud-stream",
         "demo-spring-cloud-stream-kafka",
-        "demo-spring-cloud-reactive-circuitbreaker"
+        "demo-spring-cloud-reactive-circuitbreaker",
+        "demo-spring-cloud-reactive-circuit-breaker"
 )
