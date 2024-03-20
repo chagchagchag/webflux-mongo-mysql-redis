@@ -20,6 +20,9 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-mustache")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
 
+  // reactor-core
+  implementation("io.projectreactor:reactor-core:3.6.2")
+
   // springdoc
   implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0")
 
