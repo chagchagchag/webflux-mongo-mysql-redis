@@ -1,4 +1,4 @@
-package io.chagchagchag.example.foobar.reactive_streams;
+package io.chagchagchag.example.foobar.reactive_streams.publisher_subscriber.fixed_int;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FixedIntPublisher implements Flow.Publisher<FixedIntPublisher.Result> {
 
-  public static record Result(
+  public record Result(
       Integer value,
       Integer requestCount
   ){

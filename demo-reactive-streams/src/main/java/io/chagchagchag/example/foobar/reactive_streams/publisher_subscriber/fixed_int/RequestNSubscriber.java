@@ -1,4 +1,4 @@
-package io.chagchagchag.example.foobar.reactive_streams;
+package io.chagchagchag.example.foobar.reactive_streams.publisher_subscriber.fixed_int;
 
 import java.util.concurrent.Flow;
 import java.util.concurrent.Flow.Subscription;
