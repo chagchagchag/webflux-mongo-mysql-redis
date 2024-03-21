@@ -16,9 +16,6 @@ repositories {
 }
 
 dependencies {
-  implementation(project(":foobar-core"))
-  implementation(project(":foobar-dataaccess"))
-
   // web
   implementation("org.springframework.boot:spring-boot-starter-mustache")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
