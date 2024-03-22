@@ -25,6 +25,7 @@ public class ChattingService {
 
     return Optional.ofNullable(chattingSinkMap.get(userName))
         .map(chatMany -> {
+          if(chatMany.currentSubscriberCount() == 0) return Boolean.FALSE;
           chatMany.tryEmitNext(chat);
           return Boolean.TRUE;
         })
