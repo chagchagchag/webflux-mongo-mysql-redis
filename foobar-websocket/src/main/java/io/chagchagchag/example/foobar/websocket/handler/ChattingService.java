@@ -1,6 +1,7 @@
 package io.chagchagchag.example.foobar.websocket.handler;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,14 +23,11 @@ public class ChattingService {
   public boolean sendMessage(String userName, Chat chat){
     log.info("userName : {}, chat {}", userName, chat);
 
-    if(!chattingSinkMap.containsKey(userName)) return false;
-
-    chattingSinkMap
-        .computeIfPresent(userName, (key, sink) ->{
-          sink.tryEmitNext(chat);
-          return sink;
-        });
-
-    return true;
+    return Optional.ofNullable(chattingSinkMap.get(userName))
+        .map(chatMany -> {
+          chatMany.tryEmitNext(chat);
+          return Boolean.TRUE;
+        })
+        .orElseGet(()->Boolean.FALSE);
   }
 }
