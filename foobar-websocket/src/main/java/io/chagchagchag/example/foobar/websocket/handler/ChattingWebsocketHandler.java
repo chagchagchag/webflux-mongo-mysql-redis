@@ -35,7 +35,7 @@ public class ChattingWebsocketHandler implements WebSocketHandler {
         .subscribe();
 
     return session.send(
-        chattingFlux.map(chat -> session.textMessage(chat.from() + ":" + chat.message()))
+        chattingFlux.map(chat -> session.textMessage(chat.from() + ": " + chat.message()))
     );
   }
 

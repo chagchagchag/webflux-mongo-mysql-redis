@@ -18,15 +18,17 @@ public class CustomHandshakeWebsocketService extends HandshakeWebSocketService {
         .getHeaders()
         .getFirst("X-USER-NAME");
 
-    return Mono.just(userName)
-        .switchIfEmpty(Mono.defer(() -> { // 헤더가 없을 경우 세션 종료 처리
+    return Optional.ofNullable(userName)
+        .map(_userName -> {
+          return exchange.getSession()
+              .flatMap(webSession -> {
+                webSession.getAttributes().put("user-name", _userName);
+                return super.handleRequest(exchange, handler);
+              });
+        })
+        .orElseGet(() -> {
           exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-          exchange.getResponse().setComplete();
-          return Mono.empty();
-        }))
-        .flatMap(userNameValue -> { // 헤더가 존재하면 'user-name' 이라는 새로운 헤더를 넣어준다.
-          exchange.getAttributes().put("user-name", userNameValue);
-          return super.handleRequest(exchange, handler);
+          return exchange.getResponse().setComplete();
         });
   }
 }
