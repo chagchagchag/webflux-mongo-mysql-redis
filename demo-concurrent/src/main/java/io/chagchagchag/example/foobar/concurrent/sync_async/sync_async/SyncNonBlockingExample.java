@@ -1,33 +1,38 @@
-package io.chagchagchag.example.foobar.concurrent.sync_async;
+package io.chagchagchag.example.foobar.concurrent.sync_async.sync_async;
 
 import java.time.LocalTime;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
+import java.util.concurrent.Future;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class AsyncNonBlockingExample {
-  public static void main(String [] args){
+public class SyncNonBlockingExample {
+  public static void main(String [] args) throws InterruptedException, ExecutionException {
     log.info("(start) main function " + LocalTime.now());
-    execLongDelayJob(i -> {
-      var result = 1 + i;
-      assert result == 1112;
-      log.info("result = {}", result);
-    });
+
+    var count = 1;
+    Future<Integer> job = doLongDelayJob();
+    while(!job.isDone()){
+      log.info(String.format("대기 중... %s", count++)); // 대기 중에 counting 연산을 수행
+      Thread.sleep(100);
+    }
+
+    var total = job.get() + 1;
+    assert total == 1112;
+
     log.info("(end) main function " + LocalTime.now());
   }
 
-  public static void execLongDelayJob(Consumer<Integer> callback){
+  public static Future<Integer> doLongDelayJob(){
     var executor = Executors.newSingleThreadExecutor();
     try{
-      executor.submit(()->{
+      return executor.submit(() -> {
         long start = System.currentTimeMillis();
         while(true){
           long delay = System.currentTimeMillis() - start;
           if(delay > 1000) break;
         }
-        callback.accept(1111);
-        log.info("작업이 끝났어요~!!! --- " + LocalTime.now());
         return 1111;
       });
     }

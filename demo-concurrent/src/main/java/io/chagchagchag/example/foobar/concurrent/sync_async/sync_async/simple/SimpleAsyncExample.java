@@ -1,4 +1,4 @@
-package io.chagchagchag.example.foobar.concurrent.sync_async.simple;
+package io.chagchagchag.example.foobar.concurrent.sync_async.sync_async.simple;
 
 import java.time.LocalTime;
 import java.util.function.Consumer;
