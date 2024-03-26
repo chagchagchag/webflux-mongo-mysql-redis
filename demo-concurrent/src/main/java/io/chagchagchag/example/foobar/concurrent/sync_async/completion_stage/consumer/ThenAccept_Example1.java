@@ -27,11 +27,11 @@ public class ThenAccept_Example1 {
   @SneakyThrows
   public static CompletionStage<String> stage(){
     var future = CompletableFuture.supplyAsync(() -> {
-      log.info("future 내부");
+      log.info("CompletableFuture 내부");
       return "안녕하세요";
     });
 
-    Thread.sleep(1000); // 스레드가 회수될 시간 정도의 delay 를 부여
+    Thread.sleep(1000);
     return future;
   }
 }
